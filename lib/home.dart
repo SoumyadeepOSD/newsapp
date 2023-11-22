@@ -3,9 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsapp/constant/color.dart';
 
-final baseUrl =
-    "https://newsapi.org/v2/everything?q=$query&apiKey=4dc863fee7f74a98b2c9cb5931311f06";
-String query = "";
 TextEditingController _controller = TextEditingController();
 
 class HomePage extends StatefulWidget {
@@ -17,7 +14,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   Future<Map<String, dynamic>> fetchAPI() async {
+    String query = _controller.text.toString();
     try {
+      final baseUrl =
+          "https://newsapi.org/v2/everything?q=$query&apiKey=4dc863fee7f74a98b2c9cb5931311f06";
+      setState(() {});
       var response = await http.get(Uri.parse(baseUrl));
       if (response.statusCode == 200) {
         return json.decode(response.body);
@@ -106,7 +107,9 @@ class _HomePageState extends State<HomePage> {
                               ),
                             ),
                             ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                fetchAPI();
+                              },
                               child: const Text("Search"),
                             )
                           ],
