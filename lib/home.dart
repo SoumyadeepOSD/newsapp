@@ -4,10 +4,13 @@ import 'package:http/http.dart' as http;
 import 'package:newsapp/constant/color.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:newsapp/webview.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 TextEditingController _controller = TextEditingController();
 final apiKey = dotenv.env['API_KEY'];
+DateTime? _selectedfromValue;
+DateTime? _selectedtoValue;
+String? _selectedsortbyValue;
+List<String> sortby = ['relevancy', 'popularity', 'publishedAt'];
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,7 +24,7 @@ class _HomePageState extends State<HomePage> {
     String query = _controller.text.toString();
     try {
       final baseUrl =
-          "https://newsapi.org/v2/everything?q=$query&apiKey=$apiKey";
+          "https://newsapi.org/v2/everything?q=$query&from=${_selectedfromValue.toString().split(' ')[0]}&to=${_selectedtoValue.toString().split(' ')[0]}&sortBy=$_selectedsortbyValue&apiKey=$apiKey";
       setState(() {});
       var response = await http.get(Uri.parse(baseUrl));
       if (response.statusCode == 200) {
@@ -32,6 +35,33 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       throw Exception('Error fetching data: $e');
     }
+  }
+
+  void _showfromdatepicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+    ).then((value) => {
+          setState(() {
+            _selectedfromValue = value;
+          })
+        });
+  }
+
+  void _showtodatepicker() {
+    showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+    ).then((value) => {
+          setState(() {
+            _selectedtoValue = value;
+          }),
+          print(_selectedtoValue.toString().split(' ')[0])
+        });
   }
 
   @override
@@ -88,6 +118,41 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () => _showfromdatepicker(),
+                      child: const Chip(
+                        label: Text("From"),
+                        avatar: Icon(Icons.calendar_month),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => _showtodatepicker(),
+                      child: const Chip(
+                        label: Text("To"),
+                        avatar: Icon(Icons.calendar_month),
+                      ),
+                    ),
+                    DropdownButton<String>(
+                      hint: const Center(child: Text("Sort By")),
+                      value: _selectedsortbyValue,
+                      onChanged: (value) {
+                        setState(() {
+                          _selectedsortbyValue = value;
+                        });
+                      },
+                      items:
+                          sortby.map<DropdownMenuItem<String>>((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
                 Expanded(
                   child: FutureBuilder<Map<String, dynamic>>(
                     future: fetchAPI(),
@@ -110,7 +175,7 @@ class _HomePageState extends State<HomePage> {
                               const SizedBox(height: 10.0),
                               SizedBox(
                                 height:
-                                    MediaQuery.of(context).size.height - 130,
+                                    MediaQuery.of(context).size.height - 170,
                                 child: ListView.builder(
                                   itemCount: newsdata.length,
                                   itemBuilder: (context, index) {
