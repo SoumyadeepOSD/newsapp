@@ -14,3 +14,10 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+
+<!-- #tasks -->
+<!-- 1. Country Filter-->
+<!-- 2. Category Filter -->
+<!-- 3. Managed State to save the news to favourite -->
+<!-- 4. Integrate Webflow to view the news in the mobile itself-->

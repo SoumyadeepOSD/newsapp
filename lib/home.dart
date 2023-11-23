@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsapp/constant/color.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 TextEditingController _controller = TextEditingController();
+final apiKey = dotenv.env['API_KEY'];
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,7 +19,7 @@ class _HomePageState extends State<HomePage> {
     String query = _controller.text.toString();
     try {
       final baseUrl =
-          "https://newsapi.org/v2/everything?q=$query&apiKey=4dc863fee7f74a98b2c9cb5931311f06";
+          "https://newsapi.org/v2/everything?q=$query&apiKey=$apiKey";
       setState(() {});
       var response = await http.get(Uri.parse(baseUrl));
       if (response.statusCode == 200) {
@@ -68,121 +70,136 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         body: SingleChildScrollView(
           scrollDirection: Axis.vertical,
-          child: FutureBuilder<Map<String, dynamic>>(
-            future: fetchAPI(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              } else if (snapshot.hasData) {
-                Map<String, dynamic> data = snapshot.data!;
-                List<dynamic> newsdata = data['articles'];
-                return Container(
-                  height: MediaQuery.of(context).size.height,
-                  padding: const EdgeInsets.symmetric(vertical: 20),
-                  margin: const EdgeInsets.symmetric(horizontal: 20),
-                  color: lightgrey,
+          child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 10.0),
+            height: MediaQuery.of(context).size.height,
+            width: double.infinity,
+            child: Column(
+              children: [
+                SizedBox(
                   width: double.infinity,
-                  child: Column(
+                  child: Row(
                     children: [
-                      SizedBox(
-                        width: double.infinity,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: TextField(
-                                controller: _controller,
-                                decoration: InputDecoration(
-                                  hintText: "Search Topics",
-                                  prefixIcon: const Icon(Icons.search),
-                                  border: OutlineInputBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                    borderSide: const BorderSide(
-                                      color: Colors.grey,
-                                      width: 1,
-                                    ),
-                                  ),
-                                ),
+                      Expanded(
+                        child: TextField(
+                          controller: _controller,
+                          decoration: InputDecoration(
+                            hintText: "Search Topics",
+                            prefixIcon: const Icon(Icons.search),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: const BorderSide(
+                                color: Colors.grey,
+                                width: 1,
                               ),
                             ),
-                            ElevatedButton(
-                              onPressed: () {
-                                fetchAPI();
-                              },
-                              child: const Text("Search"),
-                            )
-                          ],
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 10.0),
-                      SizedBox(
-                        height: MediaQuery.of(context).size.height - 130,
-                        child: ListView.builder(
-                          itemCount: newsdata.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              color: Colors.grey.shade100,
-                              margin: const EdgeInsets.symmetric(vertical: 10),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(10),
-                                    child: Image(
-                                      fit: BoxFit.fill,
-                                      height: 100,
-                                      width: 100,
-                                      image: NetworkImage(
-                                        newsdata[index]['urlToImage'],
-                                      ),
-                                    ),
-                                  ),
-                                  Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 180,
-                                        child: Text(
-                                          newsdata[index]['title'],
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w800,
-                                            fontSize: 16,
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        transformToReadableTime(
-                                          newsdata[index]['publishedAt'],
-                                        ),
-                                        style: TextStyle(
-                                          color: red,
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
+                      ElevatedButton(
+                        onPressed: () {
+                          fetchAPI();
+                        },
+                        child: const Text("Search"),
+                      )
                     ],
                   ),
-                );
-              } else {
-                print(snapshot.error);
-                return const Center(
-                  child: Text("Something went wrong"),
-                );
-              }
-            },
+                ),
+                Expanded(
+                  child: FutureBuilder<Map<String, dynamic>>(
+                    future: fetchAPI(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      } else if (snapshot.hasData) {
+                        Map<String, dynamic> data = snapshot.data!;
+                        List<dynamic> newsdata = data['articles'];
+                        return Container(
+                          height: MediaQuery.of(context).size.height,
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          color: lightgrey,
+                          width: double.infinity,
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 10.0),
+                              SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height - 130,
+                                child: ListView.builder(
+                                  itemCount: newsdata.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      color: Colors.grey.shade100,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 10),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceAround,
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                            child: Image(
+                                              fit: BoxFit.fill,
+                                              height: 100,
+                                              width: 100,
+                                              image: NetworkImage(
+                                                newsdata[index]['urlToImage'],
+                                              ),
+                                            ),
+                                          ),
+                                          Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              SizedBox(
+                                                width: 180,
+                                                child: Text(
+                                                  newsdata[index]['title'],
+                                                  maxLines: 2,
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.w800,
+                                                    fontSize: 16,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                transformToReadableTime(
+                                                  newsdata[index]
+                                                      ['publishedAt'],
+                                                ),
+                                                style: TextStyle(
+                                                  color: red,
+                                                  fontSize: 12.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      } else {
+                        return const Center(
+                          child: Text("🔍Search for something..."),
+                        );
+                      }
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
