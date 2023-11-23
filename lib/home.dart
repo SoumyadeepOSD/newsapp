@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsapp/constant/color.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:newsapp/webview.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 TextEditingController _controller = TextEditingController();
 final apiKey = dotenv.env['API_KEY'];
@@ -30,38 +32,6 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       throw Exception('Error fetching data: $e');
     }
-  }
-
-  String transformToReadableTime(String dateTimeString) {
-    DateTime parsedTime = DateTime.parse(dateTimeString);
-    String month = parsedTime.month.toString();
-    month == '1'
-        ? month = 'Jan'
-        : month == '2'
-            ? month = 'Feb'
-            : month == '3'
-                ? month == 'Mar'
-                : month == '4'
-                    ? 'Apr'
-                    : month == '5'
-                        ? 'May'
-                        : month == '6'
-                            ? 'Jun'
-                            : month == '7'
-                                ? 'Jul'
-                                : month == '8'
-                                    ? 'Aug'
-                                    : month == '9'
-                                        ? 'Sep'
-                                        : month == '10'
-                                            ? 'Oct'
-                                            : month == '11'
-                                                ? 'Nov'
-                                                : month == 'Dec';
-    String formattedTime = '${parsedTime.day}-$month-${parsedTime.year} '
-        '${parsedTime.hour.toString().padLeft(2, '0')}:${parsedTime.minute.toString().padLeft(2, '0')}';
-
-    return formattedTime;
   }
 
   @override
@@ -96,11 +66,24 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
+                      const SizedBox(
+                        width: 10.0,
+                      ),
                       ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                            backgroundColor: blue,
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20.0, horizontal: 20.0),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            )),
                         onPressed: () {
                           fetchAPI();
                         },
-                        child: const Text("Search"),
+                        child: Text(
+                          "Search",
+                          style: TextStyle(color: white),
+                        ),
                       )
                     ],
                   ),
@@ -120,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                           height: MediaQuery.of(context).size.height,
                           padding: const EdgeInsets.symmetric(vertical: 20),
                           margin: const EdgeInsets.symmetric(horizontal: 20),
-                          color: lightgrey,
+                          color: white,
                           width: double.infinity,
                           child: Column(
                             children: [
@@ -131,57 +114,68 @@ class _HomePageState extends State<HomePage> {
                                 child: ListView.builder(
                                   itemCount: newsdata.length,
                                   itemBuilder: (context, index) {
-                                    return Container(
-                                      color: Colors.grey.shade100,
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 10),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceAround,
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(10),
-                                            child: Image(
-                                              fit: BoxFit.fill,
-                                              height: 100,
-                                              width: 100,
-                                              image: NetworkImage(
-                                                newsdata[index]['urlToImage'],
-                                              ),
+                                    return InkWell(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => WebViewPage(
+                                              url: newsdata[index]['url'],
                                             ),
                                           ),
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: 180,
-                                                child: Text(
-                                                  newsdata[index]['title'],
-                                                  maxLines: 2,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w800,
-                                                    fontSize: 16,
+                                        );
+                                      },
+                                      child: Container(
+                                        color: Colors.grey.shade100,
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 10),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceAround,
+                                          children: [
+                                            ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                              child: Image(
+                                                fit: BoxFit.fill,
+                                                height: 100,
+                                                width: 100,
+                                                image: NetworkImage(
+                                                  newsdata[index]['urlToImage'],
+                                                ),
+                                              ),
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                SizedBox(
+                                                  width: 180,
+                                                  child: Text(
+                                                    newsdata[index]['title'],
+                                                    maxLines: 2,
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w800,
+                                                      fontSize: 16,
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              Text(
-                                                transformToReadableTime(
+                                                Text(
                                                   newsdata[index]
                                                       ['publishedAt'],
+                                                  style: TextStyle(
+                                                    color: red,
+                                                    fontSize: 12.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
                                                 ),
-                                                style: TextStyle(
-                                                  color: red,
-                                                  fontSize: 12.0,
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          )
-                                        ],
+                                              ],
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     );
                                   },
