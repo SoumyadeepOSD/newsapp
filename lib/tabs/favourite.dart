@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:newsapp/constant/color.dart';
-import 'package:newsapp/stateprovider.dart';
-import 'package:newsapp/webview.dart';
+import 'package:newsapp/provider/stateprovider.dart';
+import 'package:newsapp/pages/webview.dart';
 import 'package:provider/provider.dart';
 
 class Favourite extends StatefulWidget {

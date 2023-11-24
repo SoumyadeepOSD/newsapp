@@ -16,8 +16,14 @@ For help getting started with Flutter development, view the
 samples, guidance on mobile development, and a full API reference.
 
 
-<!-- #tasks -->
-<!-- 1. Country Filter-->
-<!-- 2. Category Filter -->
-<!-- 3. Managed State to save the news to favourite -->
-<!-- 4. Integrate Webflow to view the news in the mobile itself-->
+## Steps to run it on locally
+
+[1] fork this repo
+[2] clone it in local
+[3] create .ENV file in root level of project
+[4] Go to `https://newsapi.org/` and sigup with email & password to get the API Key
+[5] write `API_KEY = <YOUR_API_KEY>`
+
+
+Here you go!
+It's ready to run it locally in your physical mobile

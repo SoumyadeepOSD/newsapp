@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/favourite.dart';
-import 'package:newsapp/home.dart';
+import 'package:newsapp/tabs/favourite.dart';
+import 'package:newsapp/tabs/home.dart';
+import 'package:newsapp/tabs/topheadlines.dart';
 
 class Actual extends StatefulWidget {
   const Actual({super.key});
@@ -13,6 +14,7 @@ class _ActualState extends State<Actual> {
   int _index = 0;
   List<Widget> tabs = const [
     HomePage(),
+    TopHeadlines(),
     Favourite(),
   ];
   @override
@@ -31,9 +33,13 @@ class _ActualState extends State<Actual> {
               icon: Icon(Icons.home),
             ),
             BottomNavigationBarItem(
+              label: "Top News",
+              icon: Icon(Icons.auto_graph_rounded),
+            ),
+            BottomNavigationBarItem(
               label: "Favourite",
               icon: Icon(Icons.favorite),
-            )
+            ),
           ],
           currentIndex: _index,
           onTap: (value) {

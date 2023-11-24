@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:newsapp/actual.dart';
-import 'package:newsapp/home.dart';
+import 'package:newsapp/pages/actual.dart';
+import 'package:newsapp/tabs/home.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:newsapp/stateprovider.dart';
+import 'package:newsapp/provider/stateprovider.dart';
 import 'package:provider/provider.dart';
 
 Future<void> main() async {

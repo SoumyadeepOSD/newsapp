@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:newsapp/constant/color.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:newsapp/stateprovider.dart';
-import 'package:newsapp/webview.dart';
+import 'package:newsapp/provider/stateprovider.dart';
+import 'package:newsapp/pages/webview.dart';
 import 'package:provider/provider.dart';
 
 TextEditingController _controller = TextEditingController();
