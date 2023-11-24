@@ -18,11 +18,11 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Steps to run it on locally
 
-[1] fork this repo
-[2] clone it in local
-[3] create .ENV file in root level of project
-[4] Go to `https://newsapi.org/` and sigup with email & password to get the API Key
-[5] write `API_KEY = <YOUR_API_KEY>`
+- fork this repo
+- clone it in local
+- create .ENV file in root level of project
+- Go to `https://newsapi.org/` and sigup with email & password to get the API Key
+- write `API_KEY = <YOUR_API_KEY>`
 
 
 Here you go!
